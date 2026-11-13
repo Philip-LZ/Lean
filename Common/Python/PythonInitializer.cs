@@ -85,6 +85,8 @@ namespace QuantConnect.Python
                     var pyLock = Py.GIL();
                     Log.Trace($"PythonInitializer.Shutdown(): calling engine shutdown...");
                     PythonEngine.Shutdown();
+                    // The GIL dies with the interpreter; its finalizer would otherwise crash the process from the GC thread.
+                    GC.SuppressFinalize(pyLock);
                 }
                 catch (Exception ex)
                 {
